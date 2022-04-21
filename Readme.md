@@ -25,10 +25,8 @@ sudo make install
 ### Vim Plugin install
 install pynvim and neovim for vim
 ```
-pip2 install --user pynvim
 pip3 install --user pynvim
 
-pip2 install --user neovim
 pip3 install --user neovim
 ```
 
@@ -84,7 +82,7 @@ cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/; ruby extconf.rb; make
 * <F9\>: open command-t 
 * <F10\>: grep the word under cursor
 * <F11\>: pastetoggle
-* <F12\>: open a terminal right below current window, useful for invoke shell temporary
+* <F12\>: open or close a terminal right below current window, useful for invoke shell temporary
 * <alt-l\>: the same as CTRL-W l, move cursor to windows left of current one
 * <alt-h\>: the same as CTRL-W h, move cursor to windows right of current one
 * <alt-j\>: the same as CTRL-W j, move cursor to windows above of current one
@@ -106,6 +104,7 @@ cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/; ruby extconf.rb; make
 * <alt-k\>: the same as CTRL-W k, move cursor to windows below of current one
 * <alt-\-\>: the same as CTRL-W _, set current window to the highest height
 * <alt-=\>: the same as CTRL-W =, make each window equally height and wide
+* <ctrl-b\>: goto normal mode, so text can be scroll back
 
 ### Key remap
 * <c-y\>: in insert mode, remap to function GetAboveWord(), that will insert the word above current position instead of insert a character
