@@ -124,6 +124,29 @@ set wildmode=list:longest,full
 " the possible matches; see :h completeopt
 set completeopt=menu,menuone,longest
 
+"fold option
+set foldmethod=manual
+"set foldenable
+"set foldmethod=indent
+"set foldlevel=100
+"set foldopen-=search
+"set foldopen-=undo
+"
+set noexpandtab
+set softtabstop=4
+set tabstop=4
+set sw=4
+set cpo=aABceFsJ
+set guioptions= "no gui menu, and other
+set backspace=indent,eol,start
+set comments=://
+set cindent
+set autoindent!
+set smartindent
+"smart case when search, when substitute need \C
+set ignorecase smartcase
+set ruler
+
 "for gitgutter
 set updatetime=500
 
@@ -167,6 +190,11 @@ nnoremap <F10> :call GrepCursorWord()<cr>
 noremap <F11> :set invpaste<CR>
 "F12: open terminal bash in rightbelow window
 nnoremap <F12> :rightbelow terminal ++close bash<cr><c-l>
+"F12: close terminal bash
+"tnoremap <F12> <c-w>:quit<cr>
+tnoremap <F12> <c-w><c-c>
+"map <c-[> go to normal mode in terminal window
+tnoremap <c-b> <c-\><c-n>
 
 "{{{
 "K_func: file try to find tags, if fails, fall back to normal K function in
@@ -330,7 +358,7 @@ function! TerminalWin_Leave()
 endfunction
 
 "quick fix leave, sometimes bug
-"command! -nargs=0 QuickfixLeave :call Quickfix_leave_o()
+command! -nargs=0 QuickfixLeave :unmap o<cr>
 
 "this fix sometimes tagbar and nerdtree windows width not normal
 function! Tagbar_enter()
@@ -670,7 +698,7 @@ let g:CommandTMaxHeight=0
 let g:CommandTMinHeight=0
 let g:CommandTTagIncludeFilenames=0
 let g:CommandTCursorColor="red"
-"let g:CommandTHighlightColor=120
+"let g:CommandTHighlightColor="blue"
 "}}}
 
 
@@ -796,7 +824,9 @@ hi DiffDelete ctermbg=green
 
 "change completion color
 hi Pmenu ctermbg=127
-hi PmenuSel ctermbg=22
+"this affect command-t g:CommandTHighlightColor
+"hi PmenuSel ctermbg=11
+hi PmenuSel ctermbg=135
 hi PmenuSbar ctermbg=blue
 hi PmenuThumb cterm=reverse
 
@@ -823,11 +853,11 @@ function! Quickfix_o_key_func()
 endfunction
 
 function! QuickfixWinEnter_func()
-	nnoremap o :call Quickfix_o_key_func()<cr>
+	nmap o :call Quickfix_o_key_func()<cr>
 endfunction
 
 function! QuickfixWinLeave_func()
-	nunmap o
+	unmap o
 endfunction
 "}}}
 

@@ -5,7 +5,7 @@ other Linux system should also works.
 ### Vim build in Ubuntu:
 Install dependency packages:
 ```
-sudo apt-get install gcc git ruby ruby-dev lua5.2 lua5.2-dev libncurses5-dev python-dev python3-dev python-pip python3-pip
+sudo apt-get install gcc git ruby ruby-dev lua5.2 lua5.2-dev libncurses5-dev python3-dev python3-pip
 
 ```
 
@@ -13,7 +13,7 @@ Get and build vim:
 ```
 git clone https://github.com/vim/vim.git
 cd vim
-./configure --with-features=huge --enable-pythoninterp=yes --enable-python3interp=yes --enable-rubyinterp=yes --enable-cscope --enable-luainterp=yes --prefix=/usr/
+./configure --with-features=huge --enable-python3interp=yes --enable-rubyinterp=yes --enable-cscope --enable-luainterp=yes --prefix=/usr/
 make
 ```
 
