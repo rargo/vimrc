@@ -70,6 +70,9 @@ filetype plugin indent on
 let &t_TI = ""
 let &t_TE = ""
 
+
+"suffer enough from modeline warnings
+set nomodeline
 set title
 set matchpairs+=":"
 set clipboard=unnamed
@@ -132,6 +135,7 @@ set foldmethod=manual
 "set foldopen-=search
 "set foldopen-=undo
 "
+"default
 set noexpandtab
 set softtabstop=4
 set tabstop=4
@@ -149,6 +153,11 @@ set ruler
 
 "for gitgutter
 set updatetime=500
+
+"set global as csopce program
+set csprg=gtags-cscope 
+set cscopequickfix=g-,s-,c-,d-,i-,t-,e-
+set cscopetag
 
 set pyxversion=3
 let g:python3_host_prog = "/usr/bin/python3"
@@ -823,7 +832,7 @@ hi DiffText ctermbg=lightgreen
 hi DiffDelete ctermbg=green
 
 "change completion color
-hi Pmenu ctermbg=127
+hi Pmenu ctermbg=25
 "this affect command-t g:CommandTHighlightColor
 "hi PmenuSel ctermbg=11
 hi PmenuSel ctermbg=135
@@ -853,11 +862,11 @@ function! Quickfix_o_key_func()
 endfunction
 
 function! QuickfixWinEnter_func()
-	nmap o :call Quickfix_o_key_func()<cr>
+	nnoremap o :call Quickfix_o_key_func()<cr>
 endfunction
 
 function! QuickfixWinLeave_func()
-	unmap o
+	nunmap o
 endfunction
 "}}}
 
@@ -1154,3 +1163,51 @@ function! FileDir(isfile,...)
 	redraws!
 endfunction
 
+""reload gtags on tab change, coperate with tab.vim
+"function! ReloadCGtag()
+"	cs kill 0
+"	cs add GTAGS
+"	set tags=tags
+"endfunction
+"
+"" find reference
+"nnoremap \s :exec CscopeCmd("s")<CR>
+"nnoremap \S :exec CscopeCmd("s")<CR>
+"" "\d" find functions which current function calls
+"nnoremap \d :exec CscopeCmd("d")<CR>
+"nnoremap \D :exec CscopeCmd("d")<CR>
+"" "\c" find caller
+"nnoremap \c :exec CscopeCmd("c")<CR>
+"nnoremap \C :exec CscopeCmd("c")<CR>
+"" "\t" find string
+"nnoremap \t :exec CscopeCmd("t")<CR>
+"nnoremap \T :exec CscopeCmd("t")<CR>
+"" "\e" find using egrep mode
+"nnoremap \e :exec CscopeCmd("e")<CR>
+"nnoremap \E :exec CscopeCmd("e")<CR>
+"" "\f" find file
+"nnoremap \f :exec CscopeCmd("f")<CR>
+"nnoremap \F :exec CscopeCmd("f")<CR>
+"" "\i" find file which include current file
+"nnoremap \i :exec CscopeCmd("i")<CR>
+"nnoremap \I :exec CscopeCmd("i")<CR>
+"
+"function! CscopeCmd(type)
+"	"clear old qflist
+"	let qflist = []
+"	execute "cclose"
+"	call setqflist(qflist)
+"	if a:type == 'i' || a:type == 'f'
+"		let word_file = expand("<cfile>")
+"	else
+"		let word_file = expand("<cword>")
+"	endif
+"	execute "silent cs find " . a:type . " " . word_file
+"	"echo word_file
+"	"execute "normal \<cr>\<cr>"
+"	"get quickfix results
+"	let qflist = getqflist()
+"	if len(qflist) > 1
+"		execute 'rightbelow cw'
+"	endif
+"endfunction

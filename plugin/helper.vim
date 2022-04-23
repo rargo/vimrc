@@ -298,63 +298,6 @@ function! TabMessage(cmd)
 endfunction
 command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
 
-
-"F5,F6 use for diff mode or quickfix mode jump
-function! Quickfix_Diff_NERDTree_Next()
-	if g:SpecialMode['tagbar'] == 1
-		execute "normal j\<cr>\<c-w>h"
-		return
-	endif
-
-	if g:SpecialMode['nerdtree'] == 1
-		execute "normal j\<cr>\<c-w>l"
-		return
-	endif
-
-	if &diff
-		execute "normal ]c"
-		return
-	endif
-
-	let qf=getqflist()
-	if len(qf) > 0
-		try
-			execute ":silent cnext"
-			execute "normal zz"
-			return
-		catch
-		endtry
-	endif
-endfunc
-
-"F5,F6 use for diff mode or quickfix mode jump
-function! Quickfix_Diff_NERDTree_Prev()
-	if g:SpecialMode['tagbar'] == 1
-		execute "normal k\<cr>\<c-w>h"
-		return
-	endif
-
-	if g:SpecialMode['nerdtree'] == 1
-		execute "normal k\<cr>\<c-w>l"
-		return
-	endif
-
-	if &diff
-		execute "normal [c"
-		return
-	endif
-
-	let qf=getqflist()
-	if len(qf) > 0
-		try
-			execute "silent cprev"
-			execute "normal zz"
-			return
-		catch
-		endtry
-	endif
-endfunc
-
 "{==========================================================
 "delete #if 0/1 ..... #endif surroud statement
 function! DeleteIfStatement()
@@ -436,15 +379,6 @@ endfunction
 
 let g:SpecialMode = {'quickfix':0,'nerdtree':0,'tagbar':0}
 
-function! Tagbar_o_func()
-	echo "Tagbar_o_func"
-	let savepos = getpos('.')
-	let nr = winnr()
-	execute "normal \<cr>"
-	execute nr . " wincmd w"
-	call setpos('.', savepos)
-endfunction
-
 function! Tagbar_enter()
 	let g:SpecialMode['tagbar'] = 1
 	exec "vertical resize " . g:Nerdtree_window_enter_width
@@ -485,46 +419,46 @@ function! Nerdtree_leave()
 	"call WaitKey()
 endfunction
 
-autocmd BufWinEnter quickfix call QuickfixWinEnter_event()
-
-function! Quickfix_o_func()
-	echo "Quickfix_O_func"
-	let savepos = getpos('.')
-	let nr = winnr()
-	execute "normal \<cr>"
-	execute nr . " wincmd w"
-	call setpos('.', savepos)
-endfunction
-
-function! Quickfix_enter()
-	let g:SpecialMode['quickfix'] = 1
-	nnoremap o :call Quickfix_o_func()<cr>
-	"exec "resize " . g:Quickfix_window_enter_height
-endfunction
-
-function! Quickfix_leave_o()
-	let g:SpecialMode['quickfix'] = 0
-	nunmap o
-	"max window height
-	"exec "wincmd _"
-endfunction
-
-function! Quickfix_leave()
-	let g:SpecialMode['quickfix'] = 0
-	nunmap o
-	"exec "resize " . g:Quickfix_window_leave_height
-endfunction
-
-function! QuickfixWinEnter_event()
-	"echo "quickfix window enter"
-	au! * <buffer>
-	au BufEnter <buffer> call Quickfix_enter()
-	au BufLeave <buffer> call Quickfix_leave()
-
-	call Quickfix_enter()
-	"echo "quickfix bufnr " g:Quickfix_bufnr
-	"call WaitKey()
-endfunction
+"autocmd BufWinEnter quickfix call QuickfixWinEnter_event()
+"
+"function! Quickfix_o_func()
+"	echo "Quickfix_O_func"
+"	let savepos = getpos('.')
+"	let nr = winnr()
+"	execute "normal \<cr>"
+"	execute nr . " wincmd w"
+"	call setpos('.', savepos)
+"endfunction
+"
+"function! Quickfix_enter()
+"	let g:SpecialMode['quickfix'] = 1
+"	nnoremap o :call Quickfix_o_func()<cr>
+"	"exec "resize " . g:Quickfix_window_enter_height
+"endfunction
+"
+"function! Quickfix_leave_o()
+"	let g:SpecialMode['quickfix'] = 0
+"	nunmap o
+"	"max window height
+"	"exec "wincmd _"
+"endfunction
+"
+"function! Quickfix_leave()
+"	let g:SpecialMode['quickfix'] = 0
+"	nunmap o
+"	"exec "resize " . g:Quickfix_window_leave_height
+"endfunction
+"
+"function! QuickfixWinEnter_event()
+"	"echo "quickfix window enter"
+"	au! * <buffer>
+"	au BufEnter <buffer> call Quickfix_enter()
+"	au BufLeave <buffer> call Quickfix_leave()
+"
+"	call Quickfix_enter()
+"	"echo "quickfix bufnr " g:Quickfix_bufnr
+"	"call WaitKey()
+"endfunction
 
 "note, it cann't handle function like: int (*p(int a))(void)
 "a complier???
