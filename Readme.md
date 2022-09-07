@@ -37,6 +37,7 @@ cp .vimrc ~/.vimrc
 
 copy plugin and syntax directory to ~/.vim/
 ```
+mkdir ~/.vim
 cp -rf plugin syntax ~/.vim/
 ```
 
