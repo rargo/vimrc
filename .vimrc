@@ -163,6 +163,9 @@ set pyxversion=3
 let g:python3_host_prog = "/usr/bin/python3"
 let g:deoplete#enable_at_startup = 1
 
+"coperate with vim-tab, show tab buffer only in one tab
+let g:bufExplorerShowTabBuffer = 1
+
 "airline setting
 "show current directory
 let g:airline_section_a = '%{getcwd()}' "old vim mode(insert | visual | normal ..)
@@ -188,9 +191,9 @@ nnoremap <F5> :call Quickfix_Diff_Next_Item()<cr>
 nnoremap <F6> :call Quickfix_Diff_Prev_Item()<cr>
 "noremap <silent> <F2> :call Tagbar_Nerdtree_Window()<CR>
 "F7: to open current file using system editor
-nnoremap <F7> :call FileDir(1)<cr><c-l>
+nnoremap <F7> :call OpenPath(1)<cr><c-l>
 "F8: to open current file's directory
-nnoremap <F8> :call FileDir(0)<cr><c-l>
+nnoremap <F8> :call OpenPath(0)<cr><c-l>
 "F9: CommandT!!!  I love it
 noremap <silent> <F9> <ESC>:CommandT<CR>
 "F10: grep the word under cursor in current directory
@@ -366,48 +369,38 @@ function! TerminalWin_Leave()
     echo "terminal win close"
 endfunction
 
-"quick fix leave, sometimes bug
-command! -nargs=0 QuickfixLeave :unmap o<cr>
+let NERDTreeDirArrows=0
 
 "this fix sometimes tagbar and nerdtree windows width not normal
+let g:Nerdtree_window_enter_width = 40
+let g:Nerdtree_window_leave_width = 40
+
 function! Tagbar_enter()
 	exec "vertical resize " . g:Nerdtree_window_enter_width
-	"echo "tagbar window enter"
 endfunction
-
 function! Tagbar_leave()
 	exec "vertical resize " . g:Nerdtree_window_leave_width
-	"echo "tagbar window leave"
 endfunction
-
 function! Nerdtree_enter()
 	exec "vertical resize " . g:Nerdtree_window_enter_width
-	"echo "Nerdtree window enter"
 endfunction
-
 function! Nerdtree_leave()
 	exec "vertical resize " . g:Nerdtree_window_leave_width
-	"echo "Nerdtree window leave"
 endfunction
+autocmd BufEnter __Tagbar__.\+ call Tagbar_enter()
+autocmd BufLeave __Tagbar__.\+ call Tagbar_leave()
+autocmd BufEnter NERD_tree_\d\+ call Nerdtree_enter()
+autocmd BufLeave NERD_tree_\d\+ call Nerdtree_leave()
 
 "let g:tagbar_autopreview = 1
 
-autocmd BufEnter __Tagbar__ call Tagbar_enter()
-autocmd BufLeave __Tagbar__ call Tagbar_leave()
-autocmd BufEnter NERD_tree_\d\+ call Nerdtree_enter()
-autocmd BufLeave NERD_tree_\d\+ call Nerdtree_leave()
 "
 "fix quickfix windows position when used with nerdtree
 autocmd FileType qf wincmd J
 
-"nerdtree window width
-let g:Nerdtree_window_enter_width = 40
-let g:Nerdtree_window_leave_width = 40 
+let NERDTreeDirArrowExpandable = "+"
+"let NERDTreeDirArrowCollapsible = "+"
 
-" let NERDTreeDirArrowExpandable = "+"
-" let NERDTreeDirArrowCollapsible = "+"
-
-let NERDTreeDirArrows=0
 
 function! GetAboveWord()
 	"this not work, i don't know why
@@ -632,9 +625,9 @@ au BufWinEnter * if &buftype == 'terminal' | setlocal bufhidden=hide | endif
 "}}}
 
 "File filename
-command! -nargs=? -complete=file File call FileDir(1,<f-args>)
+command! -nargs=? -complete=file File call OpenPath(1,<f-args>)
 "Dir filename or directory
-command! -nargs=? -complete=file Dir call FileDir(0,<f-args>)
+command! -nargs=? -complete=file Dir call OpenPath(0,<f-args>)
 
 
 "map command line like shell
@@ -700,7 +693,7 @@ nnoremap <leader>cj O/**/<ESC>0f*a
 "command-t use vim wildignore to determine which file should be excluded
 set wildignore=*.o,*.obj,.git,.svn,*.pyc*,*.d
 let g:CommandTTraverseSCM="pwd"
-let g:CommandTMaxFiles=100000
+let g:CommandTMaxFiles=500000
 let g:CommandTMaxDepth=9
 let g:CommandTMaxCachedDirectories=30
 let g:CommandTMaxHeight=0
@@ -1099,7 +1092,7 @@ function! K_func()
 endfunc
 "}}}
 
-func! GetFileDir(filename)
+func! GetDir(filename)
 	if a:filename == "%" "special,'%' means current file
 		let current_file = getreg('%')
 	else 
@@ -1120,8 +1113,8 @@ func! GetFileDir(filename)
 	return current_dir
 endfunc
 
-function! FileDir(isfile,...)
-	let usage = "Usage: FileDir or FileDir filename"
+function! OpenPath(isfile,...)
+	let usage = "Usage: OpenPath or OpenPath filename"
 
 	if a:0 > 0
 		let current_file = a:1
@@ -1134,29 +1127,41 @@ function! FileDir(isfile,...)
 
 	let path = current_file
 	if a:isfile == 0
-		let path = GetFileDir(current_file)
+		let path = GetDir(current_file)
 	endif
 	"echom "dir is "
 	"echom dir
 
-	"if s:hascygwin == 1
-	if has("win32unix") && isdir == 1 "cygwin open directory
-		"exe "silent !start explorer ".shellescape(path,1)
-		exe "silent !cmd /c start cygstart ".path
-	elseif has("win32unix")  "cygwin open file, use windows file blowers
-		exe "silent !start explorer ".path
-	elseif has("unix") && executable("gnome-open")
-		exe "silent !gnome-open ".path
-		let ret= v:shell_error
-	elseif has("unix") && executable("kde-open")
-		exe "silent !kde-open ".path
-		let ret= v:shell_error
-	elseif has("unix") && executable("open")
-		exe "silent !open ".path
+	if has("win32unix") "cygwin
+		echo "cygwin support not tested!"
+		if a:isfile == 0
+			exe "silent !cmd /c start cygstart ". path
+		else
+			exe "silent !start explorer ". path
+		end
+	elseif has("unix")
+		if executable("nautilus") "ubuntu
+			let explorer = "nautilus"
+		elseif executable("gnome-open")
+			let explorer = "gnome-open"
+		elseif executable("kde-open")
+			let explorer = "kde-open"
+		elseif executable("open")
+			let explorer = "open"
+		else
+			echo "No valid file explorer found(like nautilus, gnome-open etc)!"
+			return
+		end
+		if a:isfile == 0
+			exe "silent !" . explorer . " " . path
+		else
+			exe "silent !xdg-open ". "\"" . path . "\""
+		end
 		let ret= v:shell_error
 	elseif has("win32") || has("win64")
 		"exe "silent !start explorer ".shellescape(path,1)
-		exe "silent !start explorer ".path
+		exe "silent !start explorer ". path
+		let ret= v:shell_error
 	end
 
 	redraw!
@@ -1170,44 +1175,44 @@ endfunction
 "	set tags=tags
 "endfunction
 "
-"" find reference
-"nnoremap \s :exec CscopeCmd("s")<CR>
-"nnoremap \S :exec CscopeCmd("s")<CR>
-"" "\d" find functions which current function calls
-"nnoremap \d :exec CscopeCmd("d")<CR>
-"nnoremap \D :exec CscopeCmd("d")<CR>
-"" "\c" find caller
-"nnoremap \c :exec CscopeCmd("c")<CR>
-"nnoremap \C :exec CscopeCmd("c")<CR>
-"" "\t" find string
-"nnoremap \t :exec CscopeCmd("t")<CR>
-"nnoremap \T :exec CscopeCmd("t")<CR>
-"" "\e" find using egrep mode
-"nnoremap \e :exec CscopeCmd("e")<CR>
-"nnoremap \E :exec CscopeCmd("e")<CR>
-"" "\f" find file
-"nnoremap \f :exec CscopeCmd("f")<CR>
-"nnoremap \F :exec CscopeCmd("f")<CR>
-"" "\i" find file which include current file
-"nnoremap \i :exec CscopeCmd("i")<CR>
-"nnoremap \I :exec CscopeCmd("i")<CR>
-"
-"function! CscopeCmd(type)
-"	"clear old qflist
-"	let qflist = []
-"	execute "cclose"
-"	call setqflist(qflist)
-"	if a:type == 'i' || a:type == 'f'
-"		let word_file = expand("<cfile>")
-"	else
-"		let word_file = expand("<cword>")
-"	endif
-"	execute "silent cs find " . a:type . " " . word_file
-"	"echo word_file
-"	"execute "normal \<cr>\<cr>"
-"	"get quickfix results
-"	let qflist = getqflist()
-"	if len(qflist) > 1
-"		execute 'rightbelow cw'
-"	endif
-"endfunction
+" find reference
+nnoremap \s :exec CscopeCmd("s")<CR>
+nnoremap \S :exec CscopeCmd("s")<CR>
+" "\d" find functions which current function calls
+nnoremap \d :exec CscopeCmd("d")<CR>
+nnoremap \D :exec CscopeCmd("d")<CR>
+" "\c" find caller
+nnoremap \c :exec CscopeCmd("c")<CR>
+nnoremap \C :exec CscopeCmd("c")<CR>
+" "\t" find string
+nnoremap \t :exec CscopeCmd("t")<CR>
+nnoremap \T :exec CscopeCmd("t")<CR>
+" "\e" find using egrep mode
+nnoremap \e :exec CscopeCmd("e")<CR>
+nnoremap \E :exec CscopeCmd("e")<CR>
+" "\f" find file
+nnoremap \f :exec CscopeCmd("f")<CR>
+nnoremap \F :exec CscopeCmd("f")<CR>
+" "\i" find file which include current file
+nnoremap \i :exec CscopeCmd("i")<CR>
+nnoremap \I :exec CscopeCmd("i")<CR>
+
+function! CscopeCmd(type)
+	"clear old qflist
+	let qflist = []
+	execute "cclose"
+	call setqflist(qflist)
+	if a:type == 'i' || a:type == 'f'
+		let word_file = expand("<cfile>")
+	else
+		let word_file = expand("<cword>")
+	endif
+	execute "silent cs find " . a:type . " " . word_file
+	"echo word_file
+	"execute "normal \<cr>\<cr>"
+	"get quickfix results
+	let qflist = getqflist()
+	if len(qflist) > 1
+		execute 'rightbelow cw'
+	endif
+endfunction
