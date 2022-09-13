@@ -32,6 +32,7 @@ pip3 install --user neovim
 
 copy .vimrc to your home directory
 ```
+mkdir ~/.vimrc
 cp .vimrc ~/.vimrc
 ```
 

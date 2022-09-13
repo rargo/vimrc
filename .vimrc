@@ -399,7 +399,7 @@ autocmd BufLeave NERD_tree_\d\+ call Nerdtree_leave()
 autocmd FileType qf wincmd J
 
 let NERDTreeDirArrowExpandable = "+"
-"let NERDTreeDirArrowCollapsible = "+"
+let NERDTreeDirArrowCollapsible = "-"
 
 
 function! GetAboveWord()
