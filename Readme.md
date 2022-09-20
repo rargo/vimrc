@@ -26,13 +26,11 @@ sudo make install
 install pynvim and neovim for vim
 ```
 pip3 install --user pynvim
-
 pip3 install --user neovim
 ```
 
 copy .vimrc to your home directory
 ```
-mkdir ~/.vimrc
 cp .vimrc ~/.vimrc
 ```
 
