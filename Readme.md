@@ -34,10 +34,10 @@ copy .vimrc to your home directory
 cp .vimrc ~/.vimrc
 ```
 
-copy plugin and syntax directory to ~/.vim/
+copy syntax directory to ~/.vim/
 ```
 mkdir ~/.vim
-cp -rf plugin syntax ~/.vim/
+cp -rf syntax ~/.vim/
 ```
 
 In bash, run:
