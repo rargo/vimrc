@@ -841,8 +841,7 @@ endif
 "{{{
 "quick fix windows settings
 
-autocmd BufWinEnter quickfix call QuickfixWinEnter_func()
-autocmd BufWinLeave quickfix call QuickfixWinLeave_func()
+autocmd BufWinEnter quickfix call QuickfixWinEnter_map_o()
 
 "in quick fix windows, 'o' key act as 'enter' key
 function! Quickfix_o_key_func()
@@ -854,14 +853,9 @@ function! Quickfix_o_key_func()
 	call setpos('.', savepos)
 endfunction
 
-function! QuickfixWinEnter_func()
-	nnoremap o :call Quickfix_o_key_func()<cr>
+function! QuickfixWinEnter_map_o()
+	nnoremap <buffer> o :call Quickfix_o_key_func()<cr>
 endfunction
-
-function! QuickfixWinLeave_func()
-	nunmap o
-endfunction
-"}}}
 
 "{{{
 "quick fix and diff windows settings
@@ -907,7 +901,7 @@ endfunc
 "grep settings
 
 "grep file filter settings
-set grepprg=grep\ -n\ -H\ -R\ -E\ --exclude-dir=.git\ --exclude-dir=.svn\ --include=*.[cCsShH]\ --include=*.txt\ --include=*.cpp\ --include=*.py\ --include=*.pl\ --include=*.java\ --include=*.lua\ --include=*.vim\ --include=*.mk\ --include=*.ld\ --include=*.sh\ --include=*.bat\ --include=[Mm]akefile\ --include=*.mk\ --include=.vimrc\ --include=*.xml\ --include=*.dts\ --include=*.dtsi\ --include=*config\ --include=*.rc\ --include=*.hpp\ --include=*.cc\ --include=*.in\ --include=*.am\ --include=*.asm\ --include=*.map\ --include=*.php
+set grepprg=grep\ -n\ -H\ -R\ -E\ --exclude-dir=.git\ --exclude-dir=.svn\ --include=*.[cCsShH]\ --include=*.txt\ --include=*.cpp\ --include=*.py\ --include=*.pl\ --include=*.java\ --include=*.lua\ --include=*.vim\ --include=*.mk\ --include=*.ld\ --include=*.sh\ --include=*.bat\ --include=[Mm]akefile\ --include=*.mk\ --include=.vimrc\ --include=*.xml\ --include=*.dts\ --include=*.dtsi\ --include=*config\ --include=*.rc\ --include=*.hpp\ --include=*.cc\ --include=*.in\ --include=*.am\ --include=*.asm\ --include=*.map\ --include=*.php\ --include=*.bb\ --include=*.bb
 "set grepprg=grep\ -nH
 set grepformat=%f:%l:%m
 
