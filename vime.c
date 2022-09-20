@@ -10,7 +10,7 @@ int main(int argc, const char *argv[])
     unsigned char cwd[256];
     char *path;
     if (argc != 2) {
-        printf("When in Vim terminal, ve tell Vim to open file for edit in current Vim\nUsage: ve file\n");
+        printf("When in Vim terminal, vime tell Vim to open file for edit in current Vim\nUsage: vime file\n");
         return -1;
     }
 
