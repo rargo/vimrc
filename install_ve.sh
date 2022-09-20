@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo 'build ve'
+echo 'build vime'
 gcc -o ve.elf ve.c
-echo 'install ve.elf to /usr/bin/ve'
-sudo cp ve.elf /usr/bin/ve
+echo 'install vime.elf to /usr/bin/vime'
+sudo cp vime.elf /usr/bin/vime

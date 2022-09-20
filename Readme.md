@@ -119,11 +119,11 @@ cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/; ruby extconf.rb; make
 * Gr <keyword>: grep keyword in current directory, search all kinds of files
 * T: open terminal in a new tab(default runs bash, change it in .vimrc)
 
-### ve.c
-ve.c is for edit files in Vim terminal, “ve file” will open file for edit in current Vim,
+### vime.c
+vime.c is for edit files in Vim terminal, “vime file” will open file for edit in current Vim,
 not start another Vim program in terminal window.
 
 build and install:
 ```
-sh install_ve.sh
+sh install_vime.sh
 ```
