@@ -75,8 +75,8 @@ cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/; ruby extconf.rb; make
 * <F2\>: tagbar toggle
 * <F3\>: NERDTree toggle
 * <F4\>: redraw screen
-* <F5\>: jump to quick fix list next item
-* <F6\>: jump to quick fix list previous item
+* <F5\>: jump to quickfix list next item
+* <F6\>: jump to quickfix list previous item
 * <F7\>: open current file using system editor
 * <F8\>: open current file's directory
 * <F9\>: open command-t 
@@ -109,6 +109,7 @@ cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/; ruby extconf.rb; make
 ### Key remap
 * <c-y\>: in insert mode, remap to function GetAboveWord(), that will insert the word above current position instead of insert a character
 * K: in normal mode, remap to function K_func(), it will first try to jump to the tag, if fails, fall back to normal K function
+* o: in quickfix window, open current item and then jump back to quickfix window
 
 ### Commands
 * GTAG: generate gtags for source under current directory
