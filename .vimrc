@@ -51,6 +51,7 @@ Plugin 'rargo/vim-line-jump'
 Plugin 'rargo/vim-tab'
 Plugin 'rargo/nerdtree-plugin-collection'
 Plugin 'rargo/vim-SeqNumber'
+Plugin 'rargo/vim-hex-rework'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -169,14 +170,17 @@ let g:bufExplorerShowTabBuffer = 1
 "airline setting
 "show current directory
 let g:airline_section_a = '%{getcwd()}' "old vim mode(insert | visual | normal ..)
-let g:airline_section_b = '' "git branch name
+"let g:airline_section_b = '' "git branch name
 "let g:airline_section_c = 'c' "current file name
-let g:airline_section_gutter = ''
+"let g:airline_section_gutter = ''
 "let g:airline_section_warning = ''
 "let g:airline_section_x = 'x'
 "let g:airline_section_y = 'y'
-let g:airline_section_z = ''
+"let g:airline_section_z = ''
 let g:airline#extensions#whitespace#enabled = 0
+" git support configure
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#sha1_len = 10
 
 " Function key mappings
 "F2: toggle tagbar
@@ -409,6 +413,27 @@ function! GetAboveWord()
 	return str
 endfunction
 "}}}
+
+
+augroup LargeFile
+	let g:large_file = 20971520 " 20MB
+
+	" Set options:
+	"   eventignore+=FileType (no syntax highlighting etc
+	"   assumes FileType always on)
+	"   noswapfile (save copy of file)
+	"   bufhidden=unload (save memory when other file is viewed)
+	"   buftype=nowritefile (is read-only)
+	"   undolevels=-1 (no undo possible)
+	au BufReadPre *
+				\ let f=expand("<afile>") |
+				\ if getfsize(f) > g:large_file |
+				\ set eventignore+=FileType |
+				\ setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1 |
+				\ else |
+				\ set eventignore-=FileType |
+				\ endif
+augroup END
 
 
 augroup textobj_quote
@@ -710,13 +735,13 @@ let g:CommandTCursorColor="red"
 "binary file, use xxd to hex editing
 augroup Binary
 au!
-au BufReadPre  *.bin,*.exe let &bin=1
-au BufReadPost *.bin,*.exe if &bin | %!xxd
-au BufReadPost *.bin,*.exe set ft=xxd | endif
-au BufWritePre *.bin,*.exe if &bin | %!xxd -r
-au BufWritePre *.bin,*.exe endif
-au BufWritePost *.bin,*.exe if &bin | %!xxd
-au BufWritePost *.bin,*.exe set nomod | endif
+au BufReadPre  *.bin,*.exe,*.img,*.dat let &bin=1
+au BufReadPost *.bin,*.exe,*.img,*.dat if &bin | %!xxd
+au BufReadPost *.bin,*.exe,*.img,*.dat set ft=xxd | endif
+au BufWritePre *.bin,*.exe,*.img,*.dat if &bin | %!xxd -r
+au BufWritePre *.bin,*.exe,*.img,*.dat endif
+au BufWritePost *.bin,*.exe,*.img,*.dat if &bin | %!xxd
+au BufWritePost *.bin,*.exe,*.img,*.dat set nomod | endif
 augroup END
 "}}}
 
@@ -899,9 +924,13 @@ endfunc
 
 "{{{
 "grep settings
+function! Gp(pattern)
+	return "--include=" . shellescape(a:pattern) . " "
+endfunction
 
 "grep file filter settings
-set grepprg=grep\ -n\ -H\ -R\ -E\ --exclude-dir=.git\ --exclude-dir=.svn\ --include=*.[cCsShH]\ --include=*.txt\ --include=*.cpp\ --include=*.py\ --include=*.pl\ --include=*.java\ --include=*.lua\ --include=*.vim\ --include=*.mk\ --include=*.ld\ --include=*.sh\ --include=*.bat\ --include=[Mm]akefile\ --include=*.mk\ --include=.vimrc\ --include=*.xml\ --include=*.dts\ --include=*.dtsi\ --include=*config\ --include=*.rc\ --include=*.hpp\ --include=*.cc\ --include=*.in\ --include=*.am\ --include=*.asm\ --include=*.map\ --include=*.php\ --include=*.bb\ --include=*.bb
+let include_pattern=Gp("*.[cCsShH]") . Gp("*.txt") . Gp("*.cpp") . Gp("*.py") . Gp("*.pl") . Gp("*.java") . Gp("*.lua") . Gp("*.vim") . Gp("*.mk") . Gp("*.ld") . Gp("*.sh") . Gp("*.bat") . Gp("[Mm]akefile") . Gp("*.mk") . Gp(".vimrc") . Gp("*.xml") . Gp("*.dts") . Gp("*.dtsi") . Gp("*config") . Gp("*.rc") . Gp("*.hpp") . Gp("*.cc") . Gp("*.in") . Gp("*.am") . Gp("*.asm") . Gp("*.map") . Gp("*.php") . Gp("*.bb") 
+let &grepprg='grep -n -H -R -E --exclude-dir=.git --exclude-dir=.svn ' .  include_pattern
 "set grepprg=grep\ -nH
 set grepformat=%f:%l:%m
 
@@ -1210,3 +1239,4 @@ function! CscopeCmd(type)
 		execute 'rightbelow cw'
 	endif
 endfunction
+
